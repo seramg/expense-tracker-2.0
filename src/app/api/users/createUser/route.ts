@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import prisma from "../../../lib/prisma";
+import prisma from "../../../shared/lib/prisma";
 import { supabase } from "../../../config/subapase";
 
 export async function POST(req: NextRequest) {
@@ -39,7 +39,11 @@ export async function POST(req: NextRequest) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "User already exists" },
+        {
+          message:
+            "An account with this email already exists. Please log in instead.",
+          data: null,
+        },
         { status: 400 }
       );
     }
@@ -64,7 +68,9 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const { data } = supabase.storage.from("ProfileImage").getPublicUrl(fileName);
+      const { data } = supabase.storage
+        .from("ProfileImage")
+        .getPublicUrl(fileName);
 
       imageUrl = data.publicUrl;
     }
