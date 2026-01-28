@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ImageUpload } from "../ui/imageUpload";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   name: z
@@ -67,15 +68,15 @@ const CreateAccountPage = () => {
                 method: "POST",
                 body: formData, // 🚨 NO headers
               });
+              console.log(res);
+              const result = await res.json();
 
               if (!res.ok) {
-                const text = await res.text();
-                console.error(text);
+                toast.error(result.message);
                 return;
               }
 
-              const result = await res.json();
-              console.log("SUCCESS", result);
+              toast.success(result.message);
             } catch (err) {
               console.error("Request failed", err);
             }
