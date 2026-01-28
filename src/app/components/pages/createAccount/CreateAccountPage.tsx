@@ -17,6 +17,7 @@ import { ImageUpload } from "../../ui/imageUpload";
 import { toast } from "react-toastify";
 import FormTextField from "@/shared/components/forms/FormTextField";
 import { DEFAULT_VALUES, formSchema } from "./schema";
+import getPayloadFormData from "@/shared/lib/getPayload";
 
 const CreateAccountPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,21 +38,11 @@ const CreateAccountPage = () => {
         onSubmit={form.handleSubmit(
           async (data) => {
             try {
-              const formData = new FormData();
-
-              formData.append("name", data.name);
-              formData.append("email", data.email);
-              formData.append("password", data.password);
-
-              if (data.image instanceof File) {
-                formData.append("image", data.image);
-              }
-
               const res = await fetch("/api/users/createUser", {
                 method: "POST",
-                body: formData, // 🚨 NO headers
+                body: getPayloadFormData(data),
               });
-              console.log(res);
+
               const result = await res.json();
 
               if (!res.ok) {
@@ -65,7 +56,6 @@ const CreateAccountPage = () => {
             }
           },
           (errors) => {
-            // THIS WILL TELL YOU WHY THE GET FALLBACK HAPPENED
             console.log("Validation Errors:", errors);
           }
         )}
