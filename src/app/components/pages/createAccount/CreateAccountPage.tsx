@@ -1,45 +1,27 @@
 "use client";
 import React from "react";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Button } from "../../ui/button";
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "../ui/field";
+} from "../../ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { ImageUpload } from "../ui/imageUpload";
+import { ImageUpload } from "../../ui/imageUpload";
 import { toast } from "react-toastify";
 import FormTextField from "@/shared/components/forms/FormTextField";
+import { DEFAULT_VALUES, formSchema } from "./schema";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, "Name must be at least 3 characters long.")
-    .max(32, "Name must be at most 32 characters long."),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long.")
-    .max(16, "Password must be at most 32 characters long.")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "Must contain at least one special character"),
-  email: z.string().email("Invalid email address"),
-  image: z.instanceof(File),
-});
 const CreateAccountPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
+    defaultValues: DEFAULT_VALUES,
   });
 
   return (
