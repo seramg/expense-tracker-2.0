@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ImageUpload } from "../ui/imageUpload";
 import { toast } from "react-toastify";
+import FormTextField from "@/shared/components/forms/FormTextField";
 
 const formSchema = z.object({
   name: z
@@ -111,72 +112,27 @@ const CreateAccountPage = () => {
 
         <div className="flex gap-4 flex-1">
           {/* Name Field */}
-          <Controller
+          <FormTextField
             name="name"
             control={form.control}
-            render={({ field, fieldState }) => {
-              return (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="flex flex-col gap-1 flex-1"
-                >
-                  <FieldLabel htmlFor="name">Full Name</FieldLabel>
-                  <Input {...field} id="name" type="text" placeholder="Name" />
-                  {fieldState.invalid && (
-                    <FieldError
-                      className="text-xs"
-                      errors={[fieldState.error]}
-                    />
-                  )}
-                </Field>
-              );
-            }}
+            placeholder="John Doe"
+            label="Full Name"
           />
-          <Controller
+
+          {/* Email Field */}
+          <FormTextField
             name="email"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field
-                data-invalid={fieldState.invalid}
-                className="flex flex-col gap-1 flex-1"
-              >
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  {...field}
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                />
-
-                {fieldState.invalid && (
-                  <FieldError className="text-xs" errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            placeholder="m@example.com"
+            label="Email"
           />
         </div>
 
-        <Controller
+        {/* Password Field */}
+        <FormTextField
           name="password"
           control={form.control}
-          render={({ field, fieldState }) => (
-            <Field
-              data-invalid={fieldState.invalid}
-              className="flex flex-col gap-1 flex-1"
-            >
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input
-                {...field}
-                id="password"
-                type="password"
-                placeholder="••••••••"
-              />
-
-              {fieldState.invalid && (
-                <FieldError className="text-xs" errors={[fieldState.error]} />
-              )}
-            </Field>
-          )}
+          label="Password"
         />
 
         <Button type="submit">Create Account</Button>
