@@ -1,13 +1,10 @@
 "use client";
 import React from "react";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
 import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup,
   FieldLabel,
 } from "../../ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +15,7 @@ import { toast } from "react-toastify";
 import FormTextField from "@/shared/components/forms/FormTextField";
 import { DEFAULT_VALUES, formSchema } from "./schema";
 import getPayloadFormData from "@/shared/lib/getPayload";
+import { signIn } from "next-auth/react";
 
 const CreateAccountPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -108,6 +106,14 @@ const CreateAccountPage = () => {
         />
 
         <Button type="submit">Create Account</Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+        >
+          Continue with Google
+        </Button>
+
         <FieldDescription>Already have an account? Log in</FieldDescription>
       </form>
     </div>
