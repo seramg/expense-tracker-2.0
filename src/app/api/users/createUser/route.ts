@@ -1,14 +1,18 @@
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import prisma from "../../../shared/lib/prisma";
 import { supabase } from "../../../config/subapase";
+import { AppEnv } from "@/config/env";
+import { createUser, getUserByEmail } from "@/controllers/userController";
 
 export async function POST(req: NextRequest) {
+  console.log(req);
   console.log(
     "DEBUG: DB URL is",
-    process.env.DATABASE_URL ? "Defined" : "UNDEFINED"
+    AppEnv.DATABASE_URL ? "Defined" : "UNDEFINED"
   );
-  if (!process.env.DATABASE_URL) {
+  if (!AppEnv.DATABASE_URL) {
     return NextResponse.json(
       { message: "DATABASE_URL is not set", data: null },
       { status: 500 }
@@ -22,10 +26,8 @@ export async function POST(req: NextRequest) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const imageFile = formData.get("image") as File | null;
-    console.log(formData);
-    console.log("IMAGE FILE:", imageFile);
 
-    if (!name || !email || !password || !imageFile) {
+    if (!name || !email || !password) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
@@ -33,9 +35,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await getUserByEmail(email);
 
     if (existingUser) {
       return NextResponse.json(
@@ -76,14 +76,14 @@ export async function POST(req: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+console.log("CREATING USER WITH:", { name, email, imageUrl, googleId: undefined });
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        image: imageUrl ?? null,
-        password: hashedPassword,
-      },
+    const user = await createUser({
+      name,
+      email,
+      password: hashedPassword,
+      image: imageUrl ?? null,
+      providers: ["credentials"],
     });
 
     return NextResponse.json(
