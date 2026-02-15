@@ -1,5 +1,5 @@
-import CreateAccountPage from "../../components/pages/createAccount/CreateAccountPage";
+import AuthPage from "@/components/pages/auth/AuthPage";
 
 export default function Home() {
-  return <CreateAccountPage />;
+  return <AuthPage />;
 }

@@ -16,8 +16,9 @@ import FormTextField from "@/shared/components/forms/FormTextField";
 import { DEFAULT_VALUES, formSchema } from "./schema";
 import getPayloadFormData from "@/shared/lib/getPayload";
 import { signIn } from "next-auth/react";
+import { AuthPageProps } from "../auth/auth.interface";
 
-const CreateAccountPage = () => {
+const CreateAccountPage = ({ handlePageChange }: AuthPageProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEFAULT_VALUES,
@@ -114,7 +115,16 @@ const CreateAccountPage = () => {
           Continue with Google
         </Button>
 
-        <FieldDescription>Already have an account? Log in</FieldDescription>
+        <FieldDescription>
+          Already have an account?{" "}
+          <Button
+            variant="link"
+            onClick={() => handlePageChange?.("signin")}
+            className="px-2! cursor-pointer"
+          >
+            Log in
+          </Button>
+        </FieldDescription>
       </form>
     </div>
   );
