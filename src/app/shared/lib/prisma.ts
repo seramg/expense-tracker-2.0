@@ -1,15 +1,17 @@
-import { PrismaClient } from '@prisma/client'
-
-const prismaClientSingleton = () => {
-  return new PrismaClient()
+// src/app/shared/lib/prisma.ts
+import { PrismaClient } from "@prisma/client";
+if (!process.env.DATABASE_URL) {
+  throw new Error("❌ DATABASE_URL is not defined at runtime");
 }
 
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
-} & typeof global;
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
 
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+const prisma = globalForPrisma.prisma ?? new PrismaClient();
 
-export default prisma
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
-if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
+export default prisma;
